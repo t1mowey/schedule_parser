@@ -28,12 +28,6 @@ jobs:
       - name: Check CSV output
         run: cat planer.csv
 
-      - name: Commit and push CSV (overwrite last commit)
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Send CSV to Google Apps Script
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add planer.csv
-          git commit --amend --no-edit
-          git push --force origin master
+          curl -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbxnH6yeT8pLNbdJ7Ob273zEZZo-Z4yalOUnCnbrPZc_2Kj0Sg9_IqdqY3EjuR9bfIHvWA/exec"

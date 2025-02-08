@@ -1,0 +1,39 @@
+name: Run Parser
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'  # Запуск каждый день в 6 утра UTC
+  workflow_dispatch:  # Возможность запустить вручную
+
+jobs:
+  run-parser:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Убедись, что у тебя есть этот файл
+      
+      - name: Run parser
+        run: python schedule_parser.py
+      - name: Check CSV output
+        run: cat planer.csv
+
+      - name: Commit and push CSV (overwrite last commit)
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add planer.csv
+          git commit --amend --no-edit
+          git push --force origin master

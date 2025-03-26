@@ -31,5 +31,5 @@ jobs:
 
       - name: Send CSV to Google Apps Script
         run: |
-          RESPONSE=$(curl -s -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbxnH6yeT8pLNbdJ7Ob273zEZZo-Z4yalOUnCnbrPZc_2Kj0Sg9_IqdqY3EjuR9bfIHvWA/exec")
+          RESPONSE=$(curl -s -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbw-G38enfjcCHUCAlg3vLSgFpXVqkcOBff4fItIdM-mJ_Qz5JQcFLeY4dTzj9Q_K8p4wg/exec")
           echo "Google Apps Script response: $RESPONSE"

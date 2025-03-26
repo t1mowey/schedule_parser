@@ -2,8 +2,8 @@ name: Run Parser
 
 on:
   schedule:
-    - cron: '0 6 * * 0'  # Запуск каждый день в 6 утра UTC
-  workflow_dispatch:  # Возможность запустить вручную
+    - cron: '0 6 * * 0'  # Каждое воскресенье в 6 утра UTC
+  workflow_dispatch:
 
 jobs:
   run-parser:
@@ -21,13 +21,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Убедись, что у тебя есть этот файл
-      
+          pip install -r requirements.txt
+
       - name: Run parser
         run: python schedule_parser.py
+
       - name: Check CSV output
         run: cat planer.csv
 
       - name: Send CSV to Google Apps Script
         run: |
-          curl -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbxnH6yeT8pLNbdJ7Ob273zEZZo-Z4yalOUnCnbrPZc_2Kj0Sg9_IqdqY3EjuR9bfIHvWA/exec"
+          RESPONSE=$(curl -s -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbxnH6yeT8pLNbdJ7Ob273zEZZo-Z4yalOUnCnbrPZc_2Kj0Sg9_IqdqY3EjuR9bfIHvWA/exec")
+          echo "Google Apps Script response: $RESPONSE"

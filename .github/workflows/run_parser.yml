@@ -31,6 +31,6 @@ jobs:
 
       - name: Upload CSV to Google Sheets via Apps Script
         run: |
-          RESPONSE=$(curl -s -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/ТВОЙ_ID/exec")
+          RESPONSE=$(curl -s -X POST -H "Content-Type: text/csv" --data-binary @planer.csv "https://script.google.com/macros/s/AKfycbyIipJtzFsAJZ-nxMJ00WTUMdw8qiSXvvgaAxjc4tRQHiTa48bGUFNsnL1u5_gC5Cu_ww/exec")
           echo "Google Apps Script response: $RESPONSE"
 

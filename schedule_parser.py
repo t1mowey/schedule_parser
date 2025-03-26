@@ -5,45 +5,39 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
+import re
 
-# Настройка headless-режима (если хочешь увидеть браузер, удали "--headless")
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Запуск браузера
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
-# Открываем страницу расписания
 url = "https://rasp.rea.ru/?q=15.27д-пм04%2F22б"
 driver.get(url)
-
-# Ждём загрузки страницы
 time.sleep(2)
 
-# Ищем и кликаем кнопку "Следующая неделя" два раза
 try:
     next_button = driver.find_element(By.XPATH, "//button[@id='next']")
     next_button.click()
-    time.sleep(3)  # Даем странице прогрузиться
+    time.sleep(3)
     next_button.click()
-    time.sleep(3)  # Даем странице прогрузиться
+    time.sleep(3)
 except Exception as e:
     print("Ошибка при нажатии на кнопку:", e)
 
 pair_time = {
-    '1 пара': ('8:30', '10:00'),
+    '1 пара': ('08:30', '10:00'),
     '2 пара': ('10:10', '11:40'),
     '3 пара': ('11:50', '13:20'),
     '4 пара': ('14:00', '15:30'),
     '5 пара': ('15:40', '17:10'),
     '6 пара': ('17:20', '18:50')
 }
-lessons = driver.find_elements(By.XPATH, "//a[contains(@class, 'task')]")
 
+lessons = driver.find_elements(By.XPATH, "//a[contains(@class, 'task')]")
 data = []
-import re
+
 for lesson in lessons:
     try:
         driver.execute_script("arguments[0].click();", lesson)
@@ -59,7 +53,6 @@ for lesson in lessons:
 
         subject = subject_match.group(1) if subject_match else "Не найдено"
         typ = typ_match.group(1) if typ_match else "Не найдено"
-        day = date_match.group(1) if date_match else "Не найдено"
         date = date_match.group(2) if date_match else "Не найдено"
         pair_num = date_match.group(3) + ' пара' if date_match else "Не найдено"
         cabinet = cabinet_match.group(1) if cabinet_match else "Не найдено"
@@ -72,38 +65,31 @@ for lesson in lessons:
         }
 
         day, month_word, year = date.split()
-
-        date = f"{day.zfill(2)}.{months[month_word]}.{year}"
+        date_iso = f"{year}-{months[month_word]}-{day.zfill(2)}"
 
         start_time = pair_time[pair_num][0]
         end_time = pair_time[pair_num][1]
 
         data.append({
             'Subject': f'{subject}, ({typ})',
-            'Start Date': date,
+            'Start Date': date_iso,
             'Start Time': start_time,
-            'End Date': date,
+            'End Date': date_iso,
             'End Time': end_time,
             'Description': f'{cabinet}, {teacher}',
             'Location': ''
         })
 
-
     except Exception as e:
         print(f"Ошибка при открытии пары: {e}")
     try:
-        # Закрываем окно
         close_button = driver.find_element(By.XPATH, "//button[@data-dismiss='modal']")
         driver.execute_script("arguments[0].click();", close_button)
         time.sleep(3)
-
     except Exception as e:
         print(f"Ошибка при закрытии пары: {e}")
 
-df = pd.DataFrame(data)
-# Выводим для визуальной проверки
-print(df.drop_duplicates())
-df = df.drop_duplicates()
-
+df = pd.DataFrame(data).drop_duplicates()
+print(df)
 df.to_csv('planer.csv', index=False)
 driver.quit()

@@ -70,15 +70,17 @@ for lesson in lessons:
         start_time = pair_time[pair_num][0]
         end_time = pair_time[pair_num][1]
 
+        start_datetime = f"{date_iso}T{start_time}:00"
+        end_datetime = f"{date_iso}T{end_time}:00"
+
         data.append({
             'Subject': f'{subject}, ({typ})',
-            'Start Date': date_iso,
-            'Start Time': start_time,
-            'End Date': date_iso,
-            'End Time': end_time,
+            'Start DateTime': start_datetime,
+            'End DateTime': end_datetime,
             'Description': f'{cabinet}, {teacher}',
             'Location': ''
         })
+
 
     except Exception as e:
         print(f"Ошибка при открытии пары: {e}")

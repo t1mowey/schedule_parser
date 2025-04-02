@@ -74,11 +74,11 @@ for lesson in lessons:
         end_datetime = f"{date_iso}T{end_time}:00"
 
         if "Лекция" in typ:
-            color = 5  
+            color = 2 
         elif "Практическое занятие" in typ:
-            color = 6  
+            color = 7  
         else:
-            color = 3  
+            color = 6 
 
         data.append({
             'Subject': f'{subject}',

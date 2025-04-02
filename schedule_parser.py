@@ -86,7 +86,7 @@ for lesson in lessons:
             'End DateTime': end_datetime,
             'Description': f'{typ}, {cabinet}, {teacher}',
             'Location': '',
-            'Color': color
+            'Color': color 
         })
 
 

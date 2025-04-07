@@ -2,7 +2,7 @@ name: Run Parser
 
 on:
   schedule:
-    - cron: '30 5 * * 1' # Every Monday in 5^30 am
+    - cron: '30 2 * * 1' # Every Monday in 5^30 am 
   workflow_dispatch:
 
 jobs:
